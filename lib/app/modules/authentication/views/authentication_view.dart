@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fradituri/app/modules/authentication/views/splash_view.dart';
+import 'package:fradituri/app/modules/home/views/home_splash_view.dart';
 import 'package:get/get.dart';
 import '../../../../common/appColors.dart';
 import '../../../../common/customFont.dart';
@@ -33,6 +35,8 @@ class AuthenticationView extends GetView<AuthenticationController> {
       );
       return;
     }
+
+    Get.offAll(HomeSplashView());
     //homeController.usernameOBS.value = _usernameController.text.trim();
 
     //print(':::::::::::::usernameOBS:::::::::::::::::${homeController.usernameOBS.value}');

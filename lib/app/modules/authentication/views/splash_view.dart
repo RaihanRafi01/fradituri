@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fradituri/app/modules/home/views/home_splash_view.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../common/appColors.dart';
@@ -13,14 +14,15 @@ class SplashView extends GetView {
   Widget build(BuildContext context) {
     // Check login status and navigate accordingly
     Future.delayed(const Duration(seconds: 3), () async {
-      final prefs = await SharedPreferences.getInstance();
+      /*final prefs = await SharedPreferences.getInstance();
       final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
       if (isLoggedIn) {
         Get.off(() => const DashboardView()); // Navigate to the Home screen if logged in
       } else {
         Get.off(() => AuthenticationView()); // Navigate to the Authentication screen if not logged in
-      }
+      }*/
+      Get.off(() => AuthenticationView());
     });
 
     return Scaffold(
@@ -28,7 +30,7 @@ class SplashView extends GetView {
         decoration: BoxDecoration(gradient: LinearGradient(colors:  AppColors.appColor)),
         child: const Center(
           child: Text(
-            'CLEVERTALK',
+            'Ai Doctor App',
             style: TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.bold,

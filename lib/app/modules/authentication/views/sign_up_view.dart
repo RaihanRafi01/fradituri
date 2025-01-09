@@ -7,9 +7,11 @@ import '../../../../common/widgets/auth/custom_button.dart';
 import '../../../../common/widgets/auth/custom_textField.dart';
 import '../../../../common/widgets/auth/terms_and_conditions_checkbox.dart';
 import '../../home/controllers/home_controller.dart';
+import '../../home/views/home_splash_view.dart';
 import '../../home/views/home_view.dart';
 import '../controllers/authentication_controller.dart';
 import 'authentication_view.dart';
+import 'splash_view.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -56,7 +58,7 @@ class _SignUpViewState extends State<SignUpView> {
       return;
     }
 
-    Get.offAll(HomeView());
+    Get.offAll(HomeSplashView());
 
     //homeController.usernameOBS.value = _usernameController.text.trim();
 

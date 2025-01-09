@@ -1,3 +1,4 @@
+import 'package:fradituri/app/modules/authentication/views/splash_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/authentication/bindings/authentication_binding.dart';
@@ -18,7 +19,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.HOME;
+  static const INITIAL = Routes.AUTHENTICATION;
 
   static final routes = [
     GetPage(
@@ -28,7 +29,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.AUTHENTICATION,
-      page: () => AuthenticationView(),
+      page: () => SplashView(),
       binding: AuthenticationBinding(),
     ),
     GetPage(
