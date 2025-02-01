@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomDropdownExample {
-  void showMenuDropdown(BuildContext context) {
+  void showMenuDropdown(BuildContext context, List<Map<String, String>> chatHistories) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -31,9 +31,22 @@ class CustomDropdownExample {
                   ),
                   SizedBox(height: 5),
                   Divider(color: Colors.white54),
-                  Text('chat 1'),
-                  Text('chat 2'),
-                  Text('chat 3'),
+                  // Loop through the chatHistories to display them
+                  ...chatHistories.map((chat) {
+                    return GestureDetector(
+                      onTap: () {
+                        print('Selected chat ID: ${chat['id']}');
+                        Navigator.pop(context); // Close the dropdown
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          chat['name'] ?? "Untitled Chat",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ],
               ),
             ),
@@ -43,3 +56,4 @@ class CustomDropdownExample {
     );
   }
 }
+
