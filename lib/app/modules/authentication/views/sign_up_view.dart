@@ -36,41 +36,55 @@ class _SignUpViewState extends State<SignUpView> {
     });
   }
 
-  void _handleSignUp() {
-    if (_usernameController.text
-        .trim()
-        .isEmpty ||
-        _emailController.text
-            .trim()
-            .isEmpty ||
-        _passwordController.text
-            .trim()
-            .isEmpty ||
-        _confirmPasswordController.text
-            .trim()
-            .isEmpty) {
-      Get.snackbar('Error', 'Please fill in all fields');
+  void _handleSignUp() async {
+    String username = _usernameController.text.trim();
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
+
+    // Check if any field is empty
+    if (username.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      Get.snackbar('Warning', 'Please fill in all fields');
       return;
     }
 
-    if (_passwordController.text != _confirmPasswordController.text) {
-      Get.snackbar('Error', 'Passwords do not match');
+    // Validate email format
+    if (!GetUtils.isEmail(email)) {
+      Get.snackbar('Warning', 'Please enter a valid email address');
       return;
     }
 
-    Get.offAll(HomeSplashView());
+    // Check if password is at least 8 characters long
+    if (password.length < 8) {
+      Get.snackbar('Warning', 'Password must be at least 8 characters long');
+      return;
+    }
 
-    //homeController.usernameOBS.value = _usernameController.text.trim();
+    // Check if passwords match
+    if (password != confirmPassword) {
+      Get.snackbar('Warning', 'Passwords do not match');
+      return;
+    }
 
-   // print(':::::::::::::usernameOBS:::::::::::::::::${homeController.usernameOBS.value}');
+    // Show loading indicator
+    _controller.isLoading.value = true;
 
-    // Proceed with sign-up logic if validations pass
-    /*_controller.signUp(
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
-      _usernameController.text.trim(),
-    );*/
+    try {
+      // Proceed with sign-up logic
+      await _controller.signUp(email, password, username);
+
+      // On success, navigate to HomeSplashView (or any other view)
+      // Get.offAll(HomeSplashView());
+    } catch (e) {
+      // Handle errors
+      Get.snackbar('Warning', 'An unexpected error occurred: $e');
+    } finally {
+      // Hide loading indicator
+      _controller.isLoading.value = false;
+    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,16 +169,18 @@ class _SignUpViewState extends State<SignUpView> {
         ),
       ),
         // Loading Indicator
-        /*Obx(() {
-          return _controller.isLoading.value
-              ? Container(
+        Obx(() {
+          if (_controller.isLoading.value) {
+            return Container(
             color: Colors.black45,
             child: const Center(
-              child: CircularProgressIndicator(color: AppColors.appColor,),
+              child: CircularProgressIndicator(color: AppColors.appColor2,),
             ),
-          )
-              : const SizedBox.shrink();
-        }),*/
+          );
+          } else {
+            return const SizedBox.shrink();
+          }
+        }),
         ],
       ),
     );

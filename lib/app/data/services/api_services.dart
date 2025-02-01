@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
   // Base URL for the API
-  final String baseUrl = ''; // Replace with your API base URL
+  final String baseUrl = 'https://8c8b-115-127-156-13.ngrok-free.app/'; // Replace with your API base URL
 
   // Send message to the API and get the response
   Future<http.Response> sendMessage(String userInput) async {
@@ -27,4 +29,147 @@ class ApiService {
       body: jsonEncode(body),
     );
   }
+
+  // Sign-up method
+  Future<http.Response> signUp(
+      String email, String password, String name) async {
+    // Construct the endpoint URL
+    final Uri url = Uri.parse('${baseUrl}api/auth/signup');
+
+    // Headers for the HTTP request
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "email": email,
+      "password": password,
+      "name": name,
+    };
+
+    // Make the POST request
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> login(String email, String password) async {
+    // Construct the endpoint URL
+    final Uri url = Uri.parse('${baseUrl}api/auth/login');
+
+    // Headers for the HTTP request
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "email": email,
+      "password": password,
+    };
+
+    // Make the POST request
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> sendOtp(String email) async {
+    // Construct the endpoint URL
+    final Uri url = Uri.parse('${baseUrl}api/auth/password/reset');
+
+    // Headers for the HTTP request
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "email": email
+    };
+
+    // Make the POST request
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> verifyOtp(String email, String otp) async {
+    // Construct the endpoint URL
+    final Uri url = Uri.parse('${baseUrl}api/auth/verify-otp');
+
+    // Headers for the HTTP request
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "email": email,
+      "otp" : otp
+    };
+
+    // Make the POST request
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> changePassword(String email, String otp, String newPassword) async {
+    // Construct the endpoint URL
+    final Uri url = Uri.parse('${baseUrl}api/auth/password/reset/verify');
+
+    // Headers for the HTTP request
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "email": email,
+      "otp" : otp,
+      "newPassword" : newPassword
+    };
+
+    // Make the POST request
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> logout() async {
+    // Construct the endpoint URL
+    final Uri url = Uri.parse('${baseUrl}api/auth/logout');
+
+    String? accessToken = await _storage.read(key: 'access_token');
+
+    // Headers for the HTTP request
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "token": accessToken!,
+    };
+
+    // Make the POST request
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
 }

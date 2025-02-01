@@ -4,47 +4,60 @@ import '../../../../common/widgets/auth/custom_HeaderText.dart';
 import '../../../../common/widgets/auth/custom_button.dart';
 import '../../../../common/widgets/auth/custom_textField.dart';
 import '../../../../common/widgets/auth/popUpWidget.dart';
+import '../controllers/authentication_controller.dart';
 
 class ResetPasswordView extends GetView {
-  const ResetPasswordView({super.key});
+  final String email;
+  final String otp;
+  const ResetPasswordView({super.key,required this.email,required this.otp});
 
   @override
   Widget build(BuildContext context) {
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController confirmPasswordController = TextEditingController();
+    final AuthenticationController _controller = Get.put(AuthenticationController());
 
-    void validateAndShowBottomSheet() {
-      String password = passwordController.text;
-      String confirmPassword = confirmPasswordController.text;
+    Future<void> validateAndShowBottomSheet() async {
+      String password = passwordController.text.trim();
+      String confirmPassword = confirmPasswordController.text.trim();
 
       if (password.isEmpty || confirmPassword.isEmpty) {
         Get.snackbar(
-          "Error",
+          "Warning",
           "Both fields are required",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.redAccent,
           colorText: Colors.white,
         );
-      } else if (password == confirmPassword) {
-        Get.bottomSheet(
-          PasswordChangedBottomSheet(
-            onBackToLogin: () {
-              Get.back(); // Close the bottom sheet
-              // Navigate to the login screen or perform another action here
-            },
-          ),
-          isScrollControlled: true,  // Makes sure the bottom sheet can be custom-sized
-        );
-      } else {
+        return;
+      }
+
+      if (password.length < 8) {
         Get.snackbar(
-          "Error",
+          "Warning",
+          "Password must be at least 8 characters long",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      if (password != confirmPassword) {
+        Get.snackbar(
+          "Warning",
           "Passwords do not match",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.redAccent,
           colorText: Colors.white,
         );
+        return;
       }
+
+      // If validation passes, call the change password method
+      await _controller.changePassword(email, otp, confirmPassword);
     }
+
 
     return Scaffold(
       body: Padding(

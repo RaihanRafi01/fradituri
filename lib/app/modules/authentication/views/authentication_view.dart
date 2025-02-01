@@ -22,12 +22,8 @@ class AuthenticationView extends GetView<AuthenticationController> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _handleLogin() {
-    if (_usernameController.text
-        .trim()
-        .isEmpty || _passwordController.text
-        .trim()
-        .isEmpty) {
+  void _handleLogin() async {
+    if (_usernameController.text.trim().isEmpty || _passwordController.text.trim().isEmpty) {
       Get.snackbar(
         'Error',
         'Please fill in all fields',
@@ -36,17 +32,25 @@ class AuthenticationView extends GetView<AuthenticationController> {
       return;
     }
 
-    Get.offAll(HomeSplashView());
-    //homeController.usernameOBS.value = _usernameController.text.trim();
+    // Show loading indicator
+    _controller.isLoading.value = true;
 
-    //print(':::::::::::::usernameOBS:::::::::::::::::${homeController.usernameOBS.value}');
-
-    // Proceed with login logic if validations pass
-    /*_controller.login(
+    try {
+      // Proceed with login logic
+      await _controller.login(
         _usernameController.text.trim(),
-        _passwordController.text.trim()
-    );*/
+        _passwordController.text.trim(),
+      );
+
+    } catch (e) {
+      // Handle errors
+      Get.snackbar('Error', 'An unexpected error occurred: $e');
+    } finally {
+      // Hide loading indicator
+      _controller.isLoading.value = false;
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +69,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
                   SizedBox(height: 50,),
                   Align(alignment: Alignment.centerLeft,child: CustomHeadertext(header1: "Login to your account",header2: "welcome back! we’ve missed you.",)),
                   SizedBox(height: 30),
-                  CustomTextField(label: "Your UserName",hint: "Enter UserName",prefixIcon: Icons.person_outline_rounded,controller: _usernameController,),
+                  CustomTextField(label: "Your Email",hint: "Enter Email",prefixIcon: Icons.email_outlined,controller: _usernameController,),
                   CustomTextField(label: "Password",hint: "Enter Password",prefixIcon: Icons.lock_outline_rounded,isPassword: true,controller: _passwordController,),
                   SizedBox(height: 20,),
                   GestureDetector(
@@ -92,16 +96,16 @@ class AuthenticationView extends GetView<AuthenticationController> {
               ),
             ),
           ),
-         /* Obx(() {
+          Obx(() {
             return _controller.isLoading.value
                 ? Container(
               color: Colors.black45,
               child: const Center(
-                child: CircularProgressIndicator(color: AppColors.appColor,),
+                child: CircularProgressIndicator(color: AppColors.appColor2,),
               ),
             )
                 : const SizedBox.shrink();
-          }),*/
+          }),
         ],
       ),
     );

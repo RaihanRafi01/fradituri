@@ -7,9 +7,9 @@ import '../../appColors.dart';
 import 'custom_button.dart';
 
 class PasswordChangedBottomSheet extends StatefulWidget {
-  final VoidCallback onBackToLogin;
 
-  const PasswordChangedBottomSheet({Key? key, required this.onBackToLogin}) : super(key: key);
+
+  const PasswordChangedBottomSheet({super.key,});
 
   @override
   _PasswordChangedBottomSheetState createState() => _PasswordChangedBottomSheetState();
