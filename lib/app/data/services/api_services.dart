@@ -4,13 +4,16 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
+
   // Base URL for the API
-  final String baseUrl = 'https://8c8b-115-127-156-13.ngrok-free.app/'; // Replace with your API base URL
+  final String baseUrl =
+      'https://8c8b-115-127-156-13.ngrok-free.app/'; // Replace with your API base URL
 
   // Send message to the API and get the response
   Future<http.Response> sendMessage(String userInput) async {
     // Construct the endpoint URL
-    final Uri url = Uri.parse('http://192.168.10.208:5500/api/doctor_assist/'); // Updated with trailing slash
+    final Uri url = Uri.parse(
+        'http://192.168.10.208:5500/api/doctor_assist/'); // Updated with trailing slash
 
     // Headers for the HTTP request
     final Map<String, String> headers = {
@@ -89,9 +92,7 @@ class ApiService {
     };
 
     // Request body
-    final Map<String, String> body = {
-      "email": email
-    };
+    final Map<String, String> body = {"email": email};
 
     // Make the POST request
     return await http.post(
@@ -111,10 +112,7 @@ class ApiService {
     };
 
     // Request body
-    final Map<String, String> body = {
-      "email": email,
-      "otp" : otp
-    };
+    final Map<String, String> body = {"email": email, "otp": otp};
 
     // Make the POST request
     return await http.post(
@@ -124,7 +122,8 @@ class ApiService {
     );
   }
 
-  Future<http.Response> changePassword(String email, String otp, String newPassword) async {
+  Future<http.Response> changePassword(
+      String email, String otp, String newPassword) async {
     // Construct the endpoint URL
     final Uri url = Uri.parse('${baseUrl}api/auth/password/reset/verify');
 
@@ -136,8 +135,8 @@ class ApiService {
     // Request body
     final Map<String, String> body = {
       "email": email,
-      "otp" : otp,
-      "newPassword" : newPassword
+      "otp": otp,
+      "newPassword": newPassword
     };
 
     // Make the POST request
@@ -172,4 +171,70 @@ class ApiService {
     );
   }
 
+  ///// CHAT
+
+  /// Create a new chat with the first message
+  Future<http.Response> createChat(String message) async {
+    final Uri url = Uri.parse('${baseUrl}api/chatbot/message');
+    // Retrieve the stored access token
+    String? accessToken = await _storage.read(key: 'access_token');
+
+    // Headers for the HTTP request with Bearer token
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $accessToken", // Add the Bearer token
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "userMessage": message,
+    };
+
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  /// Send a message to an existing chat
+  Future<http.Response> sendMessageToChat(String chatId, String message) async {
+    final Uri url = Uri.parse('${baseUrl}api/chatbot/message');
+    String? accessToken = await _storage.read(key: 'access_token');
+
+    // Headers for the HTTP request with Bearer token
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $accessToken", // Add the Bearer token
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "chatId": chatId,
+      "userMessage": message
+
+    };
+
+    return http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  /// Fetch chat history
+  Future<http.Response> getChatHistory(String chatId) async {
+    final Uri url = Uri.parse('${baseUrl}api/chatbot/history/$chatId');
+    String? accessToken = await _storage.read(key: 'access_token');
+
+    // Headers for the HTTP request with Bearer token
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $accessToken", // Add the Bearer token
+    };
+    return await http.get(
+      url,
+      headers: headers,
+    );
+  }
 }

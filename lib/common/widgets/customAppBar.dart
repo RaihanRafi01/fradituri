@@ -34,36 +34,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   dropdown.showMenuDropdown(context);
                 },
                   child: SvgPicture.asset('assets/images/home/menu_icon.svg')),
-              /*Padding(
-                padding: const EdgeInsets.only(left: 40.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(SubscriptionView());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.zero, // Remove padding to fit the gradient properly
-                  ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: AppColors.appColor, // Adjust colors as needed
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      child: Text(
-                        "Get A Plan",
-                        style: TextStyle(color: Colors.white), // Ensure text is visible
-                      ),
-                    ),
-                  ),
-                ),
-              ),*/
               Row(
                 children: [
                   GestureDetector(

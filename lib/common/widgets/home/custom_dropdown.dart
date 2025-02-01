@@ -30,39 +30,16 @@ class CustomDropdownExample {
                     ),
                   ),
                   SizedBox(height: 5),
-                  Text(
-                    "Today chat",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white70,
-                    ),
-                  ),
                   Divider(color: Colors.white54),
-                  _chatItem("Chat 1........."),
-                  _chatItem("Chat 2........."),
-                  _chatItem("Chat 3........."),
+                  Text('chat 1'),
+                  Text('chat 2'),
+                  Text('chat 3'),
                 ],
               ),
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget _chatItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            text,
-            style: TextStyle(color: Colors.white),
-          ),
-          Icon(Icons.more_horiz, color: Colors.white),
-        ],
-      ),
     );
   }
 }

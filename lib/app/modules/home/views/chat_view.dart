@@ -6,7 +6,7 @@ import '../../../../common/widgets/home/message_bubble.dart';
 import '../controllers/chat_controller.dart';
 
 class ChatView extends StatelessWidget {
-  const ChatView({Key? key}) : super(key: key);
+  const ChatView({super.key});
 
   @override
   Widget build(BuildContext context) {
