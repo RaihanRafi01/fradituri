@@ -1,31 +1,37 @@
 import 'package:get/get.dart';
+import 'dart:convert';
+import '../../../data/services/api_services.dart';
 
 class ChatController extends GetxController {
-  // List to manage messages
   final RxList<Map<String, String>> messages = <Map<String, String>>[
     {'sender': 'bot', 'message': "Hello! How can I assist you with your health today?"},
   ].obs;
 
-  // Add a new user message and generate a bot response
-  void sendMessage(String userMessage) {
+  final ApiService apiService = ApiService(); // Initialize the ApiService
+
+  void sendMessage(String userMessage) async {
     if (userMessage.trim().isEmpty) return;
 
-    // Add user message
+    // Add user message to the chat
     messages.add({'sender': 'user', 'message': userMessage});
 
-    // Simulate bot response
-    final botResponse = _generateBotResponse(userMessage);
-    messages.add({'sender': 'bot', 'message': botResponse});
-  }
+    // Add a placeholder bot message
+    final int loadingIndex = messages.length;
+    messages.add({'sender': 'bot', 'message': '...'}); // Show "..." while loading
 
-  // Generate a bot response (you can customize this logic)
-  String _generateBotResponse(String userMessage) {
-    if (userMessage.toLowerCase().contains("hello")) {
-      return "Hi! How can I assist you today?";
-    } else if (userMessage.toLowerCase().contains("fatigue")) {
-      return "I'm sorry to hear that. Make sure to rest well and stay hydrated.";
-    } else {
-      return "Thank you for sharing. Could you provide more details about your symptoms?";
+    try {
+      // Send message to the API
+      final response = await apiService.sendMessage(userMessage);
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final botResponse = responseData["response"] ?? "Sorry, I couldn't understand that.";
+        messages[loadingIndex] = {'sender': 'bot', 'message': botResponse}; // Replace "..." with actual response
+      } else {
+        messages[loadingIndex] = {'sender': 'bot', 'message': "Error: ${response.reasonPhrase}"};
+      }
+    } catch (e) {
+      messages[loadingIndex] = {'sender': 'bot', 'message': "Error: Unable to fetch response. Please try again."};
     }
   }
 }

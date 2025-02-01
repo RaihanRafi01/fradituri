@@ -34,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   dropdown.showMenuDropdown(context);
                 },
                   child: SvgPicture.asset('assets/images/home/menu_icon.svg')),
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.only(left: 40.0),
                 child: ElevatedButton(
                   onPressed: () {
@@ -63,7 +63,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ),
-              ),
+              ),*/
               Row(
                 children: [
                   GestureDetector(

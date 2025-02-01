@@ -10,7 +10,7 @@ class ChatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ChatController chatController = Get.find<ChatController>(); // Get the shared controller
+    final ChatController chatController = Get.find<ChatController>();
     final TextEditingController textController = TextEditingController();
 
     return Scaffold(

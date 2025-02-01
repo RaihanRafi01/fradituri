@@ -17,8 +17,13 @@ class BotMessage extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset(
+              /*SvgPicture.asset(
                 'assets/images/home/bot_icon.svg',
+                width: 30,
+                height: 30,
+              ),*/
+              Image.asset(
+                'assets/images/home/bot_icon.png', // Path to your PNG image
                 width: 30,
                 height: 30,
               ),
@@ -26,7 +31,11 @@ class BotMessage extends StatelessWidget {
               Expanded(
                 child: Text(
                   message,
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  style: TextStyle(
+                    color: message == '...' ? Colors.grey : Colors.white, // Dim "..."
+                    fontStyle: message == '...' ? FontStyle.italic : FontStyle.normal, // Italicize "..."
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
