@@ -40,7 +40,7 @@ class BotMessage extends StatelessWidget {
               ),
             ],
           ),
-          Padding(
+          /*Padding(
             padding: const EdgeInsets.only(left: 28.0),
             child: Row(
               children: [
@@ -62,7 +62,7 @@ class BotMessage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          ),*/
         ],
       ),
     );

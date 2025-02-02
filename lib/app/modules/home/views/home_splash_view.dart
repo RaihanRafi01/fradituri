@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fradituri/app/modules/home/controllers/home_controller.dart';
 import 'package:get/get.dart';
 import 'home_view.dart';
 class HomeSplashView extends GetView {

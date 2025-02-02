@@ -238,6 +238,21 @@ class ApiService {
     );
   }
 
+  Future<http.Response> getHistory() async {
+    final Uri url = Uri.parse('${baseUrl}api/chatbot/all-chats');
+    String? accessToken = await _storage.read(key: 'access_token');
+
+    // Headers for the HTTP request with Bearer token
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $accessToken", // Add the Bearer token
+    };
+    return await http.get(
+      url,
+      headers: headers,
+    );
+  }
+
   Future<List<Map<String, String>>> fetchAllHistory() async {
     final Uri url = Uri.parse('${baseUrl}api/chatbot/all-chats');
     String? accessToken = await _storage.read(key: 'access_token');
@@ -279,6 +294,44 @@ class ApiService {
     } catch (e) {
       throw Exception('Error fetching chat histories: $e');
     }
+  }
+
+  Future<http.Response> updateChatName(String chatName, String chatId) async {
+    final Uri url = Uri.parse('${baseUrl}api/chatbot/update-chat-name/$chatId');
+    String? accessToken = await _storage.read(key: 'access_token');
+
+    // Headers for the HTTP request with Bearer token
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $accessToken", // Add the Bearer token
+    };
+
+    // Request body
+    final Map<String, String> body = {
+      "newChatName": chatName,
+    };
+
+    return http.put(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> deleteChat(String chatId) async {
+    final Uri url = Uri.parse('${baseUrl}api/chatbot/delete-chat/$chatId');
+    String? accessToken = await _storage.read(key: 'access_token');
+
+    // Headers for the HTTP request with Bearer token
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $accessToken", // Add the Bearer token
+    };
+
+    return http.delete(
+      url,
+      headers: headers
+    );
   }
 
 }

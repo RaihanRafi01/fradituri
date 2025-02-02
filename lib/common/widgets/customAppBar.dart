@@ -5,6 +5,7 @@ import 'package:fradituri/app/modules/profile/views/profile_view.dart';
 import 'package:get/get.dart';
 
 import '../../app/data/services/api_services.dart';
+import '../../app/modules/home/controllers/home_controller.dart';
 import '../../app/modules/notification_subscription/views/subscription_view.dart';
 import '../appColors.dart';
 import '../customFont.dart';
@@ -17,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ApiService _service = ApiService();
+    final HomeController homeController = Get.put(HomeController());
     final CustomDropdownExample dropdown = CustomDropdownExample();
     return Container(
       height: preferredSize.height,
@@ -33,12 +34,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               GestureDetector(
                 onTap: () async {
-                  // Fetch the chat history from API
-                  //List<Map<String, String>> chats = await fetchAllHistory();
-                  final chatHistories = await _service.fetchAllHistory();
-                  // Show the dropdown menu with chat names
-                  dropdown.showMenuDropdown(context, chatHistories);
+                  if (homeController.chatHistories.isEmpty) {
+                    print("Fetching chat history.....................");
+                    await homeController.fetchHistory();
+                  }
+
+                  print("Chat history count: ${homeController.chatHistories.length}");
+
+                  if (homeController.chatHistories.isNotEmpty) {
+                    dropdown.showMenuDropdown(context, homeController.chatHistories);
+                  } else {
+                    print("No chat history available to show.");
+                  }
                 },
+
                 child: SvgPicture.asset('assets/images/home/menu_icon.svg'),
               ),
               Row(

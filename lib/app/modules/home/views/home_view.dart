@@ -4,12 +4,15 @@ import '../controllers/chat_controller.dart';
 import '../../../../common/widgets/customAppBar.dart';
 import '../../../../common/widgets/home/custom_messageInputField.dart';
 import '../../../../common/widgets/home/message_bubble.dart';
+import '../controllers/home_controller.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final HomeController homeController = Get.put(HomeController());
+    homeController.fetchHistory();
     final ChatController chatController = Get.put(ChatController());
     final TextEditingController textController = TextEditingController();
 
