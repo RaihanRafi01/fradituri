@@ -15,7 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool isTitle;
   final bool isChat;
-  const CustomAppBar({super.key, this.title = '', this.isTitle = false, this.isChat = false});
+  const CustomAppBar({super.key, this.title = '', this.isTitle = false, this.isChat = true});
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +34,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: () async {
-                  if (homeController.chatHistories.isEmpty) {
+                onTap: () {
+                  /*if (homeController.chatHistories.isEmpty) {
                     print("Fetching chat history.....................");
                     await homeController.fetchHistory();
                   }
@@ -43,22 +43,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   print("Chat history count: ${homeController.chatHistories.length}");
 
                   if (homeController.chatHistories.isNotEmpty) {
-                    dropdown.showMenuDropdown(context, homeController.chatHistories,isChat);
+                    dropdown.showMenuDropdown(context, *//*homeController.chatHistories,*//*isChat);
                   } else {
                     print("No chat history available to show.");
-                  }
+                  }*/
+                  dropdown.showMenuDropdown(context, /*homeController.chatHistories,*/isChat);
                 },
 
                 child: SvgPicture.asset('assets/images/home/menu_icon.svg'),
               ),
               Row(
                 children: [
-                  GestureDetector(
+                  /*GestureDetector(
                     onTap: () {
                       Get.to(NotificationSubscriptionView());
                     },
                     child: SvgPicture.asset('assets/images/profile/notification_icon.svg'),
-                  ),
+                  ),*/
                   SizedBox(width: 16),
                   GestureDetector(
                     onTap: () {

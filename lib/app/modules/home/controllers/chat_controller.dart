@@ -6,9 +6,11 @@ import '../views/chat_view.dart';
 class ChatController extends GetxController {
   final RxList<Map<String, String>> messages = <Map<String, String>>[].obs;
   final ApiService apiService = ApiService();
+  var isLoading = false.obs; // Reactive loading state
   String? chatId; // Store chat ID from API
 
   Future<void> createChat(String firstMessage) async {
+    isLoading.value = true; // Show the loading screen
     if (firstMessage.trim().isEmpty) return;
 
     try {
@@ -42,6 +44,8 @@ class ChatController extends GetxController {
     } catch (e) {
       print(':::::::::::::::::::::::::::::::::::::::::::::::::ERROR : $e');
       Get.snackbar("Error", "Unable to create chat. Please try again.");
+    }finally {
+      isLoading.value = false; // Hide the loading screen
     }
   }
 

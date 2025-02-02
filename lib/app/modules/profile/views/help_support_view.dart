@@ -12,71 +12,89 @@ class HelpSupportView extends GetView<ProfileController> {
 
   final emailController = TextEditingController(); // Text controllers
   final problemController = TextEditingController();
-  //final SettingController settingController = Get.put(SettingController());
+  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: CustomAppBar(title: 'Help Center',isTitle: true,),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            SizedBox(height: 26),
-            TextField(
-              controller: emailController, // Attach the controller
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Type Your Email",
-                hintStyle: TextStyle(color: Colors.white54),
-                filled: true,
-                fillColor: Color(0xFF2E2E2E),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.white54, width: 1), // Border when not focused
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.blue, width: 2), // Border when focused
-                ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 26),
+                  TextField(
+                    controller: emailController, // Attach the controller
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: "Type Your Email",
+                      hintStyle: TextStyle(color: Colors.white54),
+                      filled: true,
+                      fillColor: Color(0xFF2E2E2E),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.white54, width: 1), // Border when not focused
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.blue, width: 2), // Border when focused
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 26),
+                  // Description TextField
+                  TextField(
+                    controller: problemController, // Attach the controller
+                    style: TextStyle(color: Colors.white),
+                    maxLines: 10,
+                    decoration: InputDecoration(
+                      hintText: "Description",
+                      hintStyle: TextStyle(color: Colors.white54),
+                      filled: true,
+                      fillColor: Color(0xFF2E2E2E),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.white54, width: 1), // Border when not focused
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.blue, width: 2), // Border when focused
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  CustomButton(
+                    width: 100,
+                    borderRadius: 10,
+                    text: 'SEND',
+                    onPressed: (){
+                      _validateAndSend(context);
+                    },
+                  )
+                ],
               ),
             ),
-            SizedBox(height: 26),
-// Description TextField
-            TextField(
-              controller: problemController, // Attach the controller
-              style: TextStyle(color: Colors.white),
-              maxLines: 10,
-              decoration: InputDecoration(
-                hintText: "Description",
-                hintStyle: TextStyle(color: Colors.white54),
-                filled: true,
-                fillColor: Color(0xFF2E2E2E),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.white54, width: 1), // Border when not focused
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.blue, width: 2), // Border when focused
-                ),
+          ),
+          Obx(() {
+            return profileController.isLoading.value
+                ? Container(
+              color: Colors.black45,
+              child: const Center(
+                child: CircularProgressIndicator(color: AppColors.appColor2,),
               ),
-            ),
-            SizedBox(height: 30),
-            CustomButton(
-              width: 100,
-              borderRadius: 10,
-              text: 'SEND',
-              onPressed: _validateAndSend,
             )
-          ],
-        ),
-      ),
+                : const SizedBox.shrink();
+          }),
+        ],
+      )
     );
   }
 
-  void _validateAndSend() {
+  Future<void> _validateAndSend(context) async {
     final email = emailController.text.trim();
     final problem = problemController.text.trim();
 
@@ -90,7 +108,8 @@ class HelpSupportView extends GetView<ProfileController> {
       return;
     }
 
-    //settingController.helpAndSupport(email, problem);
+    await profileController.helpAndSupport(email, problem);
+    Navigator.pop(context);
   }
 
   bool _isValidEmail(String email) {

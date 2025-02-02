@@ -1,18 +1,23 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:fradituri/app/modules/authentication/views/authentication_view.dart';
-import 'package:fradituri/app/modules/profile/views/about_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
+import 'package:image_picker/image_picker.dart';
 import '../../../../common/widgets/customAppBar.dart';
 import '../../../../common/widgets/profile/custom_Listile.dart';
 import '../../authentication/controllers/authentication_controller.dart';
+import '../../home/controllers/home_controller.dart';
+import 'about_view.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({Key? key}) : super(key: key);
+  ProfileView({super.key});
+
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
-    final AuthenticationController _controller = Get.put(AuthenticationController());
+    final AuthenticationController _authController = Get.put(AuthenticationController());
+    final HomeController _homeController = Get.put(HomeController());
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -27,19 +32,42 @@ class ProfileView extends StatelessWidget {
                   // Profile Picture and Name
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.grey[700],
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 40,
-                        ),
+                      // Profile Picture
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: _homeController.profilePicUrl.value.isEmpty
+                                ? Colors.white  // White background when no profile picture is set
+                                : Colors.transparent,  // Transparent background when profile picture is available
+                            backgroundImage: _homeController.profilePicUrl.value.isNotEmpty
+                                ? NetworkImage(_homeController.profilePicUrl.value)
+                                : null,
+                            child: (_homeController.profilePicUrl.value.isEmpty)
+                                ? Icon(
+                              Icons.person_outline_rounded,
+                              color: Colors.black, // Icon color, typically black to be visible on a white background
+                              size: 50, // Adjust the icon size as needed
+                            )
+                                : null,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () => _pickImage(_homeController),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                child: SvgPicture.asset('assets/images/profile/edit_pic.svg'),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(width: 30),
-                      const Text(
-                        'Pial',
-                        style: TextStyle(
+                      Text(
+                        _homeController.userName.value,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -52,22 +80,16 @@ class ProfileView extends StatelessWidget {
                   // Profile Details
                   CustomListTile(
                     svgIconPath: 'assets/images/profile/email_icon.svg',
-                    title: 'xyz@gmail.com',
+                    title: _homeController.userEmail.value,
                     titleColor: Colors.white,
                   ),
                   const SizedBox(height: 16),
-                  /*CustomListTile(
-                    svgIconPath: 'assets/images/profile/call_icon.svg',
-                    title: '+88 ****96***',
-                    titleColor: Colors.white,
-                  ),*/
-                  //const SizedBox(height: 16),
                   CustomListTile(
                     svgIconPath: 'assets/images/profile/about_icon.svg',
                     title: 'About',
                     trailingIcon: Icons.arrow_forward_ios,
                     onTap: () {
-                      Get.to(AboutView());
+                      Get.to(() => AboutView());
                     },
                   ),
                   const SizedBox(height: 16),
@@ -101,9 +123,9 @@ class ProfileView extends StatelessWidget {
                       );
 
                       if (confirmLogout == true) {
-                        _controller.isLoading.value = true; // Show loading overlay
-                        await _controller.logout();
-                        _controller.isLoading.value = false; // Hide loading overlay
+                        _authController.isLoading.value = true; // Show loading overlay
+                        await _authController.logout();
+                        _authController.isLoading.value = false; // Hide loading overlay
                       }
                     },
                   ),
@@ -112,9 +134,9 @@ class ProfileView extends StatelessWidget {
             ),
 
             // Loading Overlay
-            if (_controller.isLoading.value)
+            if (_authController.isLoading.value)
               Container(
-                color: Colors.black.withOpacity(0.5), // Semi-transparent background
+                color: Colors.black.withOpacity(0.5),
                 child: const Center(
                   child: CircularProgressIndicator(color: Colors.red),
                 ),
@@ -123,5 +145,14 @@ class ProfileView extends StatelessWidget {
         );
       }),
     );
+  }
+
+  // Pick image from gallery and upload it
+  Future<void> _pickImage(HomeController homeController) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      // Upload the image and update the profile URL
+      await homeController.uploadProfileImage(File(image.path));
+    }
   }
 }
