@@ -56,12 +56,12 @@ class ProfileView extends StatelessWidget {
                     titleColor: Colors.white,
                   ),
                   const SizedBox(height: 16),
-                  CustomListTile(
+                  /*CustomListTile(
                     svgIconPath: 'assets/images/profile/call_icon.svg',
                     title: '+88 ****96***',
                     titleColor: Colors.white,
-                  ),
-                  const SizedBox(height: 16),
+                  ),*/
+                  //const SizedBox(height: 16),
                   CustomListTile(
                     svgIconPath: 'assets/images/profile/about_icon.svg',
                     title: 'About',

@@ -69,11 +69,8 @@ flutter:
   assets:
     - assets/images/auth/
     - assets/images/home/
-    - assets/images/audio/
-    - assets/images/text/
     - assets/images/profile/
     - assets/images/settings/
-    - assets/images/navbar/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
