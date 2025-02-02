@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fradituri/app/modules/home/controllers/chat_controller.dart';
+import 'package:fradituri/app/modules/home/views/home_view.dart';
 import 'package:get/get.dart';
 
 import '../../../app/modules/home/controllers/home_controller.dart';
+import '../../../app/modules/home/views/chat_view.dart';
 
 class CustomDropdownExample {
   final HomeController homeController = Get.put(HomeController());
-  void showMenuDropdown(BuildContext context, List<Map<String, String>> chatHistories) {
+  final ChatController chatController = Get.put(ChatController());
+  void showMenuDropdown(BuildContext context, List<Map<String, String>> chatHistories , bool isChat) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -26,13 +31,24 @@ class CustomDropdownExample {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "History",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "History",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        if(isChat)
+                        GestureDetector(
+                          onTap: (){
+                            Get.offAll(HomeView());
+                          },
+                            child: SvgPicture.asset('assets/images/home/new_icon.svg',color: Colors.white,)),
+                      ],
                     ),
                     SizedBox(height: 5),
                     Divider(color: Colors.white54),
@@ -78,9 +94,14 @@ class CustomDropdownExample {
                             ),
                           ],
                         ),
-                        onTap: () {
+                        onTap: () async {
                           print('Selected chat ID: ${chat['id']}');
                           Navigator.pop(context); // Close the dropdown
+                          // Fetch chat history by chatId
+                          await chatController.fetchChatHistory(chat['id']!);
+
+                          // Navigate to the ChatView
+                          Get.to(() => const ChatView());
                         },
                       );
                     }).toList(),

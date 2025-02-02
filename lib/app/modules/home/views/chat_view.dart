@@ -15,7 +15,7 @@ class ChatView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(isChat: true,),
       body: Column(
         children: [
           Expanded(

@@ -26,7 +26,7 @@ class HomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Obx(() => chatController.messages.isNotEmpty
+              /*Obx(() => chatController.messages.isNotEmpty
                   ? BotMessage(
                 message: chatController.messages.lastWhere(
                       (msg) => msg['sender'] == 'bot',
@@ -34,7 +34,8 @@ class HomeView extends StatelessWidget {
                 )['message']!,
               )
                   : const BotMessage(message: 'Hello! How can I assist you today?'),
-              ),
+              ),*/
+              const BotMessage(message: 'Hello! How can I assist you today?'),
               const SizedBox(height: 6.0),
               CustomMessageInputField(
                 textController: textController,

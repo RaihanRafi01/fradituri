@@ -14,7 +14,8 @@ import 'home/custom_dropdown.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool isTitle;
-  const CustomAppBar({super.key, this.title = '', this.isTitle = false});
+  final bool isChat;
+  const CustomAppBar({super.key, this.title = '', this.isTitle = false, this.isChat = false});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   print("Chat history count: ${homeController.chatHistories.length}");
 
                   if (homeController.chatHistories.isNotEmpty) {
-                    dropdown.showMenuDropdown(context, homeController.chatHistories);
+                    dropdown.showMenuDropdown(context, homeController.chatHistories,isChat);
                   } else {
                     print("No chat history available to show.");
                   }

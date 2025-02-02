@@ -80,24 +80,34 @@ class ChatController extends GetxController {
   }
 
   /// Fetches chat history if a chat exists
-  Future<void> fetchChatHistory() async {
-    if (chatId == null) return;
+  Future<void> fetchChatHistory(String chatId) async {
+    this.chatId = chatId; // Store the selected chat ID
 
     try {
-      final response = await apiService.getChatHistory(chatId!);
+      final response = await apiService.getChatHistory(chatId);
 
+      print(':::::::::::::::RESPONSE:::::::::::::::::::::${response.body.toString()}');
+      print(':::::::::::::::CODE:::::::::::::::::::::${response.statusCode}');
+      print(':::::::::::::::REQUEST:::::::::::::::::::::${response.request}');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
         final chatContents = responseData["chatHistory"]["chat_contents"];
 
-        messages.assignAll(chatContents.map<Map<String, String>>((msg) => {
-          'sender': msg['sent_by'].toLowerCase(),
-          'message': msg['text_content'],
-        }).toList());
+        messages.assignAll(
+          chatContents.map<Map<String, String>>((msg) {
+            return {
+              'sender': (msg['sent_by'] as String).toLowerCase(),
+              'message': msg['text_content'] as String,
+            };
+          }).toList(),
+        );
+      } else {
+        Get.snackbar("Error", "Failed to load chat history.");
       }
     } catch (e) {
-      Get.snackbar("Error", "Unable to fetch chat history.");
+      Get.snackbar("Error", "Unable to fetch chat history. Please try again.");
     }
   }
+
 }
