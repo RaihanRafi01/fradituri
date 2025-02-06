@@ -131,6 +131,42 @@ class AuthenticationController extends GetxController {
     }
   }
 
+  Future<void> checkEmail(String email) async {
+    isLoading.value = true; // Show the loading screen
+    try {
+      final http.Response response = await _service.checkEmail(email);
+
+      print(':::::::::::::::RESPONSE:::::::::::::::::::::${response.body.toString()}');
+      print(':::::::::::::::CODE:::::::::::::::::::::${response.statusCode}');
+      print(':::::::::::::::REQUEST:::::::::::::::::::::${response.request}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Assuming the server responds with success on code 200 or 201
+        final responseBody = jsonDecode(response.body);
+
+        print(':::::::::::::::responseBody:::::::::::::::::::::${responseBody}');
+        final exists = responseBody['exists'];
+
+        if (exists == true) {
+          // Only call sendOtp if exists is true
+          await sendOtp(email);
+        } else {
+          Get.snackbar('Warning', 'Email does not exist');
+        }
+
+      } else {
+        final responseBody = jsonDecode(response.body);
+        Get.snackbar('Error', responseBody['message'] ?? 'Sign-up failed');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'An unexpected error occurred');
+      print('Error: $e');
+    } finally {
+      isLoading.value = false; // Hide the loading screen
+    }
+  }
+
+
   Future<void> sendOtp(String email) async {
     startTimer();
     isLoading.value = true; // Show the loading screen
@@ -224,7 +260,7 @@ class AuthenticationController extends GetxController {
 
   Future<void> logout() async {
     isLoading.value = true; // Show the loading screen
-    try {
+    /*try {
       final http.Response response = await _service.logout();
 
       print(':::::::::::::::RESPONSE:::::::::::::::::::::${response.body.toString()}');
@@ -247,7 +283,10 @@ class AuthenticationController extends GetxController {
       print('Error: $e');
     } finally {
       isLoading.value = false; // Hide the loading screen
-    }
+    }*/
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false); // User is logged in
+    Get.offAll(AuthenticationView());
   }
 
 }

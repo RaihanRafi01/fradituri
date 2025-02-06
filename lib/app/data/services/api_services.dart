@@ -10,7 +10,7 @@ class ApiService {
 
   // Base URL for the API
   final String baseUrl =
-      'https://1eda-115-127-156-9.ngrok-free.app/'; // Replace with your API base URL
+      'https://bca7-115-127-156-9.ngrok-free.app/'; // Replace with your API base URL
 
   // Send message to the API and get the response
   Future<http.Response> sendMessage(String userInput) async {
@@ -88,6 +88,26 @@ class ApiService {
   Future<http.Response> sendOtp(String email) async {
     // Construct the endpoint URL
     final Uri url = Uri.parse('${baseUrl}api/auth/password/reset');
+
+    // Headers for the HTTP request
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Request body
+    final Map<String, String> body = {"email": email};
+
+    // Make the POST request
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> checkEmail(String email) async {
+    // Construct the endpoint URL
+    final Uri url = Uri.parse('${baseUrl}api/auth/check-email');
 
     // Headers for the HTTP request
     final Map<String, String> headers = {

@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HomeController homeController = Get.put(HomeController());
+    final HomeController _homeController = Get.put(HomeController());
     final CustomDropdownExample dropdown = CustomDropdownExample();
     return Container(
       height: preferredSize.height,
@@ -65,10 +65,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     onTap: () {
                       Get.to(ProfileView());
                     },
-                    child: CircleAvatar(
+                    child: Obx(()=>CircleAvatar(
                       radius: 15,
-                      backgroundImage: AssetImage("assets/images/profile/profile_avatar.png"),
-                    ),
+                      backgroundColor: _homeController.profilePicUrl.value.isEmpty
+                          ? Colors.white  // White background when no profile picture is set
+                          : Colors.transparent,  // Transparent background when profile picture is available
+                      backgroundImage: _homeController.profilePicUrl.value.isNotEmpty
+                          ? NetworkImage(_homeController.profilePicUrl.value)
+                          : null,
+                      child: (_homeController.profilePicUrl.value.isEmpty)
+                          ? Icon(
+                        Icons.person_outline_rounded,
+                        color: Colors.black, // Icon color, typically black to be visible on a white background
+                        size: 20, // Adjust the icon size as needed
+                      )
+                          : null,
+                    ),)
                   ),
                 ],
               ),

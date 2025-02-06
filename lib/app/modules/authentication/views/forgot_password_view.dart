@@ -15,8 +15,16 @@ class ForgotPasswordView extends GetView<AuthenticationController> {
   void _handleSendOtp() async {
     String email = _emailController.text.trim();
 
+    // Simple regex to check if email contains '@' and ends with '.com'
+    final emailRegex = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$");
+
     if (email.isEmpty) {
       Get.snackbar('Error', 'Please enter your email address');
+      return;
+    }
+
+    if (!emailRegex.hasMatch(email)) {
+      Get.snackbar('Error', 'Please enter a valid email address (e.g., example@example.com)');
       return;
     }
 
@@ -25,9 +33,11 @@ class ForgotPasswordView extends GetView<AuthenticationController> {
 
     try {
       // Call API to send OTP
-      await controller.sendOtp(email); // Assuming sendOtp is the API method
+      await controller.checkEmail(email); // Assuming sendOtp is the API method
 
       // On success, navigate to VerifyOTPView
+      // For now, you can navigate like this (adjust if necessary):
+      // Get.to(VerifyOTPView());
     } catch (e) {
       // Handle error
       Get.snackbar('Error', 'An error occurred: $e');
@@ -37,8 +47,10 @@ class ForgotPasswordView extends GetView<AuthenticationController> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+    Get.put(AuthenticationController());
     return Scaffold(
       appBar: AppBar(),
       body: Stack(

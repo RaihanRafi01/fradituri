@@ -2,12 +2,14 @@ import 'package:get/get.dart';
 import 'dart:convert';
 import '../../../data/services/api_services.dart';
 import '../views/chat_view.dart';
+import 'home_controller.dart';
 
 class ChatController extends GetxController {
   final RxList<Map<String, String>> messages = <Map<String, String>>[].obs;
   final ApiService apiService = ApiService();
   var isLoading = false.obs; // Reactive loading state
   String? chatId; // Store chat ID from API
+  final HomeController homeController = Get.put(HomeController());
 
   Future<void> createChat(String firstMessage) async {
     isLoading.value = true; // Show the loading screen
@@ -36,8 +38,8 @@ class ChatController extends GetxController {
             };
           }).toList(),
         );
-
         Get.to(() => const ChatView()); // Navigate to ChatView
+        await homeController.fetchHistory();
       } else {
         Get.snackbar("Error", "Failed to create chat: ${response.reasonPhrase}");
       }
